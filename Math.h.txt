@@ -1,0 +1,815 @@
+//Provided by XuFanY, Nankai University, 2019.2.13
+
+#ifndef MATH_H
+#define MATH_H
+
+#include<iostream>
+using namespace std;
+
+//基本数学函数
+class Math
+{
+public:
+	//构造函数
+	Math()
+	{
+		;
+	}
+
+	//析构函数
+	~Math()
+	{
+		;
+	}
+
+	//求圆周率pai,n为小数的位数
+	double pi(int n)
+	{
+		if (n < 1)
+		{
+			return(3.0);
+		}
+		int k;
+		double pai = 1.0;
+		for (k = 2; reciprocal(k) > power(10.0, -n); k++)
+		{
+			double r = reciprocal(2 * k - 1);
+			if (even(k))
+			{
+				pai -= r;
+				continue;
+			}
+			pai += r;
+		}
+		return(4 * pai);
+	}
+
+	//求自然常数e,n为小数的位数
+	double e(int n)
+	{
+		if (n < 1)
+		{
+			return(2.0);
+		}
+		int k;
+		double E = 1.0;
+		for (k = 1; reciprocal(k) > power(10.0, -n); k++)
+		{
+			E += reciprocal(factorial(k));
+		}
+		return(E);
+	}
+
+	//判断整数n是否为奇数
+	bool odd(int n)
+	{
+		if (n % 2 == 1)
+		{
+			return(true);
+		}
+		return(false);
+	}
+
+	//判断整数n是否为偶数
+	bool even(int n)
+	{
+		if (n % 2 == 0)
+		{
+			return(true);
+		}
+		return(false);
+	}
+
+	//判断整数n是否为素数
+	bool prime(int n)
+	{
+		if (n < 2)
+		{
+			return(false);
+		}
+		if ((n == 2) || (n == 3))
+		{
+			return(true);
+		}
+		if (even(n))
+		{
+			return(false);
+		}
+		int k;
+		for (k = 2; k < (n - 1) / 2; k++)
+		{
+			if (n%k == 0)
+			{
+				break;
+			}
+		}
+		if (k == (n - 1) / 2)
+		{
+			return(true);
+		}
+		return(false);
+	}
+
+	//求x的绝对值|x|
+	template<typename T>inline T absvalue(T x)
+	{
+		if (x < 0)
+		{
+			return(-x);
+		}
+		return(x);
+	}
+
+	//求x的倒数1/x
+	template<typename T>inline double reciprocal(T x)
+	{
+		if (x != 0)
+		{
+			return(1.0 / x);
+		}
+		return(0);
+	}
+
+	//求x的下界(即向下取整)
+	template<typename T>inline int downrounding(T x)
+	{
+		int n = int(x);
+		if (n > x)
+		{
+			return(n - 1);
+		}
+		return(n);
+	}
+
+	//求x的上界(即向上取整)
+	template<typename T>inline int uprounding(T x)
+	{
+		int n = int(x);
+		if (n < x)
+		{
+			return(n + 1);
+		}
+		return(n);
+	}
+
+	//默认(type=1时)判断x是否属于[a,b],type=2时判断x是否属于(a,b],type=3时判断x是否属于[a,b),否则判断x是否属于(a,b)
+	template<typename T>inline bool range(T x, T a, T b, int type = 1)
+	{
+		if (a > b)
+		{
+			bool *o = new bool;
+			return(*o);
+		}
+		if (type == 1)
+		{
+			if (x >= a && x <= b)
+			{
+				return(true);
+			}
+			return(false);
+		}
+		if (type == 2)
+		{
+			if (x > a && x <= b)
+			{
+				return(true);
+			}
+			return(false);
+		}
+		if (type == 3)
+		{
+			if (x >= a && x < b)
+			{
+				return(true);
+			}
+			return(false);
+		}
+		if (x > a && x < b)
+		{
+			return(true);
+		}
+		return(false);
+	}
+
+	//交换x和y的值
+	template<typename T> void swap(T& x, T& y)
+	{
+		T tem = x;
+		x = y, y = tem;
+	}
+
+	//求min{x,y}
+	template<typename T> T min(T x, T y)
+	{
+		if (x < y)
+		{
+			return(x);
+		}
+		return(y);
+	}
+
+	//求max{x,y}
+	template<typename T> T max(T x, T y)
+	{
+		if (x > y)
+		{
+			return(x);
+		}
+		return(y);
+	}
+
+	//求x^n(n为整数)
+	template<typename T>double power(T x, int n)
+	{
+		if (x == 0 || x == 1 || n == 1)
+		{
+			return(x);
+		}
+		if (x == -1)
+		{
+			if (odd(n))
+			{
+				return(x);
+			}
+			return(1);
+		}
+		if (n < 0)
+		{
+			T X = x;
+			int k;
+			for (k = 1; k < n; k++)
+			{
+				x = x*X;
+			}
+			return(reciprocal(x));
+		}
+		if (n == 0)
+		{
+			return(1);
+		}
+		T X = x;
+		int k;
+		for (k = 1; k < n; k++)
+		{
+			x = x*X;
+		}
+		return(x);
+	}
+
+	//求x的n次方根(n为整数)
+	template<typename T>double root(T x, int n)
+	{
+		if (n < 1 || (even(n) && x < 0))
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (x == 0 || n == 1)
+		{
+			return(x);
+		}
+		double c = reciprocal(n), c1 = 1 - c, c2 = c*x, y = 1, z = 1;
+		while (absvalue(x - y*z) / x > 1e-10)
+		{
+			y = c1*y + c2 / z;
+			z = power(y, n - 1);
+		}
+		return(y);
+	}
+
+	//求整数n的因子数
+	int FactorNumber(int n)
+	{
+		if (n < 1)
+		{
+			return(0);
+		}
+		if (n == 1)
+		{
+			return(1);
+		}
+		int k, n0 = 2;
+		for (k = 2; k < n; k++)
+		{
+			if (n%k == 0)
+			{
+				n0++;
+			}
+		}
+		return(n0);
+	}
+
+	//求整数n的所有因子,返回一个整型数组
+	int* factor(int n)
+	{
+		if (n < 1)
+		{
+			int *f = new int;
+			return(f);
+		}
+		if (n == 1)
+		{
+			int *f = new int[1];
+			f[0] = 1;
+			return(f);
+		}
+		int i, j = 1, n0 = FactorNumber(n), *f = new int[n0];
+		f[0] = 1;
+		for (i = 2; i < n; i++)
+		{
+			if (n%i == 0)
+			{
+				f[j] = i;
+				j++;
+			}
+		}
+		f[n0 - 1] = n;
+		return(f);
+	}
+
+	//求字符数组s的长度
+	int digit(char *s)
+	{
+		int n = 0;
+		while (s[n] != '\0')
+		{
+			n = n + 1;
+		}
+		return(n);
+	}
+
+	//求整数n化为x(默认为10)进制时的位数
+	int digit(int n, int x = 10)
+	{
+		if (range(x, 2, 36))
+		{
+			if (n < 0)
+			{
+				n = -n;
+			}
+			if (n < x)
+			{
+				return(1);
+			}
+			int d, p = x;
+			for (d = 2;; d++)
+			{
+				if (range(n, p, p*x, 3))
+				{
+					return(d);
+				}
+				p = p*x;
+			}
+		}
+		int *d = new int;
+		return(*d);
+	}
+
+	//求整数n化为x(默认为10)进制时的第k位数(从右向左)
+	int kdigit(int k, int n, int x = 10)
+	{
+		if (range(x, 2, 36) || range(k, 1, digit(n, x)))
+		{
+			if (k == 1)
+			{
+				return(n % x);
+			}
+			while (k > 1)
+			{
+				n = (n - n%x) / x;
+				k--;
+			}
+			return(n%x);
+		}
+		return(0);
+	}
+
+	//判断整数n是否为回文数(从左向右和从右向左看大小相同,如121,939等)
+	bool palindrome(int n)
+	{
+		if ((n < 0) || (n % 10 == 0))
+		{
+			return(false);
+		}
+		if (n < 10)
+		{
+			return(true);
+		}
+		int k, n0 = digit(n);
+		if (odd(n0))
+		{
+			n0 = (n0 + 1) / 2;
+			for (k = 1; k < n0; k++)
+			{
+				if (kdigit(n0 - k, n) != kdigit(n0 + k, n))
+				{
+					return(false);
+				}
+			}
+			return(true);
+		}
+		n0 = n0 / 2;
+		for (k = 1; k <= n0; k++)
+		{
+			if (kdigit(n0 - k + 1, n) != kdigit(n0 + k, n))
+			{
+				return(false);
+			}
+		}
+		return(true);
+	}
+
+	//判断整数n是否为完全数(其所有因子之和为2n,如6,28,496,8128等)
+	bool perfect(int n)
+	{
+		if (n < 6)
+		{
+			return(false);
+		}
+		if (accumulation(0, FactorNumber(n), factor(n)) == n + n)
+		{
+			return(true);
+		}
+		return(false);
+	}
+
+	//求整数n的反序数,如12的反序数为21
+	int reverse(int n)
+	{
+		if (n < 0)
+		{
+			return(-reverse(-n));
+		}
+		if (palindrome(n))
+		{
+			return(n);
+		}
+		int d = digit(n), i, sum = 0;
+		for (i = 0; i < d; i++)
+		{
+			sum += kdigit(d - i, n)*(int)power(10, i);
+		}
+		return(sum);
+	}
+
+	//求整数n与其反序数之后,如n=12时为33
+	int ReversalSum(int n)
+	{
+		if (palindrome(n))
+		{
+			return(n + n);
+		}
+		return(n + reverse(n));
+	}
+
+	//求字符c对应的大写字符
+	char upper(char c)
+	{
+		int n = int(c);
+		if (range(n, 97, 122))
+		{
+			c = char(n - 32);
+		}
+		return(c);
+	}
+
+	//求字符c对应的小写字符
+	char lower(char c)
+	{
+		int n = int(c);
+		if (range(n, 65, 90))
+		{
+			c = char(n + 32);
+		}
+		return(c);
+	}
+
+	//求整数n对应的36进制字符(0,1,...,9,A,B,...,Z),默认(c为u时)10~35转换为大写字符，否则转换为小写字符
+	char character(int n, char c = 'u')
+	{
+		if (range(n, 0, 9))
+		{
+			return(char(n + 48));
+		}
+		if (range(n, 10, 35))
+		{
+			if (c == 'u')
+			{
+				return(char(n + 55));
+			}
+			return(char(n + 87));
+		}
+		char *s = new char;
+		return(*s);
+	}
+
+	//求字符c(大小写皆可)对应的10进制数
+	int integar(char c)
+	{
+		int n = int(c);
+		if (range(n, 48, 57))
+		{
+			return(n - 48);
+		}
+		if (range(n, 65, 90))
+		{
+			return(int(c) - 55);
+		}
+		if (range(n, 97, 122))
+		{
+			return(int(c) - 87);
+		}
+		int *o = new int;
+		return(*o);
+	}
+
+	//判断数s是否为合理的x进制数,如八进制数18是不对的，十六进制数2Z也是不对的
+	bool right(int x, char *s)
+	{
+		if (range(x, 2, 36))
+		{
+			int k;
+			for (k = 0; s[k] != '\0'; k++)
+			{
+				if (integar(s[k]) >= x)
+				{
+					return(false);
+				}
+			}
+			return(true);
+		}
+		bool *o = new bool;
+		return(*o);
+	}
+
+	//求x进制数s的十进制数
+	int xTOdec(int x, char *s)
+	{
+		if (range(x, 2, 36))
+		{
+			if (right(x, s))
+			{
+				int k, sum = 0, n = digit(s);
+				for (k = 0; k < n; k++)
+				{
+					sum += integar(s[n - 1 - k])*(int)power(x, k);
+				}
+				return(sum);
+			}
+		}
+		int *o = new int;
+		return(*o);
+	}
+
+	//求十进制数n的y进制数
+	char* decToy(int n, int y)
+	{
+		if (range(y, 2, 36))
+		{
+			int k, m = digit(n, y);
+			char *s = new char[m];
+			for (k = 0; k < m; k++)
+			{
+				s[k] = character(kdigit(m - k, n, y));
+			}
+			return(s);
+		}
+		char *c = new char;
+		return(c);
+	}
+
+	//求x进制数s的y进制数
+	char* xtoy(int x, int y, char *s)
+	{
+		if (range(x, 2, 36) && range(y, 2, 36))
+		{
+			return(decToy(xTOdec(x, s), y));
+		}
+		char *c = new char;
+		return(c);
+	}
+
+	//求阶乘n!
+	int factorial(int n)
+	{
+		if (n < 0)
+		{
+			int *o = new int;
+			return(*o);
+		}
+		if (n < 2)
+		{
+			return(1);
+		}
+		int f = 2, k;
+		for (k = 3; k < n + 1; k++)
+		{
+			f = f*k;
+		}
+		return(f);
+	}
+
+	//求数m的n阶乘m*(m-1)*...*(m-n+1)
+	double factorial(double m, int n)
+	{
+		if (n < 0)
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (n < 2)
+		{
+			return(m);
+		}
+		int k;
+		double f = m;
+		for (k = 1; k < n; k++)
+		{
+			f = f*(m - k);
+		}
+		return(f);
+	}
+
+	//求排列数P(m,n),n>=m
+	int arrangement(int m, int n)
+	{
+		if (m > n)
+		{
+			int *o = new int;
+			return(*o);
+		}
+		if (m == 1)
+		{
+			return(n);
+		}
+		if (m == n || m + 1 == n)
+		{
+			return(factorial(n));
+		}
+		int a = n, k;
+		for (k = n - 1; k != n - m; k--)
+		{
+			a = a*k;
+		}
+		return(a);
+	}
+
+	//求组合数C(m,n),n>=m
+	int combination(int m, int n)
+	{
+		if (m > n)
+		{
+			int *o = new int;
+			return(*o);
+		}
+		if (m == 1 || m + 1 == n)
+		{
+			return(n);
+		}
+		if (m == n)
+		{
+			return(1);
+		}
+		if (m > n / 2)
+		{
+			m = n - m;
+		}
+		return(arrangement(m, n) / factorial(m));
+	}
+
+	//求斐波那契数列的第n项
+	int fibonacci(int n)
+	{
+		if (n < 0)
+		{
+			int *o = new int;
+			return(*o);
+		}
+		if (n == 1 || n == 2)
+		{
+			return(1);
+		}
+		int *f = new int[n], k;
+		f[0] = f[1] = 1;
+		for (k = 2; k < n; k++)
+		{
+			f[k] = f[k - 1] + f[k - 2];
+		}
+		return(f[n - 1]);
+	}
+
+	//求m和n的最大公因子
+	int MaxComFactor(int m, int n)
+	{
+		if (prime(m) && prime(n))
+		{
+			return(1);
+		}
+		int x = max(m, n), y = min(m, n), tem;
+		while (x%y != 0)
+		{
+			tem = x;
+			x = y;
+			y = tem%y;
+		}
+		return(y);
+	}
+
+	//求m和n的最小公倍数
+	int MinComMultiple(int m, int n)
+	{
+		if (prime(m) && prime(n))
+		{
+			return(m*n);
+		}
+		if (max(m, n) % min(m, n) == 0)
+		{
+			return(max(m, n));
+		}
+		return(m*n / MaxComFactor(m, n));
+	}
+
+	//求数组a第begin项到最后一项的和
+	template<typename T> T accumulation(int begin, int n, T* a)
+	{
+		T sum = 0;
+		if (n > 0)
+		{
+			int k;
+			for (k = begin; k < n; k++)
+			{
+				sum += a[k];
+			}
+		}
+		return(sum);
+	}
+
+	//求首项为a1,公差为d的等差数列的第n项
+	double arithmetic(double a1, double d, int n)
+	{
+		if (n < 1)
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (n == 1)
+		{
+			return(a1);
+		}
+		return(a1 + (n - 1)*d);
+	}
+
+	//求首项为a1,公比为q的等比数列的第n项
+	double geometric(double a1, double q, int n)
+	{
+		if (n < 1)
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (n == 1)
+		{
+			return(a1);
+		}
+		return(a1*power(q, n - 1));
+	}
+
+	//求首项为a1,公差为d的等差数列的前n项和
+	double ArithSum(double a1, double d, int n)
+	{
+		if (n < 1)
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (n == 1)
+		{
+			return(a1);
+		}
+		return(n*a1 + (n*n - n)*d / 2);
+	}
+
+	//求首项为a1,公比为q的等比数列的前n项和
+	double GeomeSum(double a1, double q, int n)
+	{
+		if (n < 1)
+		{
+			double *o = new double;
+			return(*o);
+		}
+		if (n == 1)
+		{
+			return(a1);
+		}
+		if (q == 1)
+		{
+			return(n*a1);
+		}
+		return(a1*(1 - power(q, n)) / (1 - q));
+	}
+
+};
+
+Math maths;
+
+#endif // MATH_H
