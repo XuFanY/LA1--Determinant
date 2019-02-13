@@ -1,0 +1,31 @@
+//Provided by XuFanY, Nankai University, 2019.2.13
+
+#include"Determinant.h"
+
+int main()
+{
+	int k, frequency, n;
+	cin >> frequency;
+	if (frequency<1)
+	{
+		return 0;
+	}
+	for (k = 0; k < frequency; k++)
+	{
+		cin >> n;
+		Determinant A(n);
+		cin >> A;
+		cout << "A: " << endl << A << endl;
+		cout << "A': " << endl << A.transpose() << endl;
+		cout << "|A|(±ä»»): " << endl << A.transform() << endl;
+		cout << "|A|(laplace1,0): " << endl << A.laplace1() << endl;
+		cout << "|A|(laplace1,1): " << endl << A.laplace1(1) << endl;
+		cout << "|A|(laplace1,2): " << endl << A.laplace1(2) << endl;
+		cout << "|A|(laplace1,3): " << endl << A.laplace1(3) << endl;
+		cout << "|A|(laplace2,0,1): " << endl << A.laplace2() << endl;
+		cout << "|A|(laplace2,1,2): " << endl << A.laplace2(1, 2) << endl;
+		cout << "|A|(laplace2,1,3): " << endl << A.laplace2(1, 3) << endl;
+		cout << "|A|(laplace2,2,3): " << endl << A.laplace2(2, 3) << endl;
+	}
+	return 0;
+}
